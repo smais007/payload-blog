@@ -1,3 +1,3 @@
 export default async function HomePage() {
-    return null
+    return <h1>Hello from payload</h1>
 }
