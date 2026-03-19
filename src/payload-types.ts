@@ -186,6 +186,7 @@ export interface Article {
     };
     [k: string]: unknown;
   };
+  contentSummary: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -315,6 +316,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   content?: T;
+  contentSummary?: T;
   updatedAt?: T;
   createdAt?: T;
 }

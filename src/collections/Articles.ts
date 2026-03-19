@@ -1,3 +1,4 @@
+import { convertLexicalToPlaintext } from '@payloadcms/richtext-lexical/plaintext'
 import type { CollectionConfig } from 'payload'
 import type { FieldHook } from 'payload'
 import slugify from 'slugify'
@@ -22,6 +23,20 @@ const formatSlug: FieldHook = ({ value, siblingData, originalDoc, operation }) =
     return value
 }
 
+const MAX_SUMMARY_LENGTH = 160
+
+const generateContentSummary: FieldHook = ({ value, data }) => {
+    console.log(data?.content)
+
+    if (value) return ''
+    if (!data?.content) return ''
+    const text = convertLexicalToPlaintext({ data: data.content }).trim()
+    if (!text) return ''
+    return text.length > MAX_SUMMARY_LENGTH
+        ? `${text.substring(0, MAX_SUMMARY_LENGTH - 3)}...`
+        : text
+}
+
 export const Articles: CollectionConfig = {
     slug: 'articles',
     fields: [
@@ -44,6 +59,14 @@ export const Articles: CollectionConfig = {
             name: 'content',
             type: 'richText',
             required: true,
+        },
+        {
+            name: 'contentSummary',
+            type: 'textarea',
+            required: true,
+            hooks: {
+                beforeValidate: [generateContentSummary],
+            },
         },
     ],
 }
