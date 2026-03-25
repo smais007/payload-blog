@@ -68,5 +68,58 @@ export const Articles: CollectionConfig = {
                 beforeValidate: [generateContentSummary],
             },
         },
+        {
+            name: 'readTimeInMinutes',
+            type: 'number',
+            defaultValue: 0,
+            admin: {
+                hidden: true,
+            },
+            hooks: {
+                beforeChange: [
+                    ({ siblingData }) => {
+                        // Read time is not stored in the database, it's calculated on the fly based on the content length, so we remove it before saving to avoid storing it in the database
+                        delete siblingData.readTimeInMinutes
+                    },
+                ],
+                afterRead: [
+                    ({ data }) => {
+                        const wordsPerMinute = 200 // Average reading speed
+                        const text = convertLexicalToPlaintext({ data: data?.content }).trim()
+                        const wordCount = text.split(/\s+/).length
+                        return Math.ceil(wordCount / wordsPerMinute)
+                    },
+                ],
+            },
+        },
+        {
+            name: 'coverImage',
+            type: 'upload',
+            relationTo: 'media',
+            required: false,
+        },
+        {
+            name: 'authors',
+            type: 'relationship',
+            relationTo: 'articles-authors',
+            required: true,
+        },
+        {
+            name: 'status',
+            type: 'select',
+            options: ['Draft', 'Published'],
+            defaultValue: 'Draft',
+        },
+        {
+            name: 'publishedAt',
+            type: 'date',
+            required: true,
+            admin: {
+                condition: (data) => data?.status === 'Published',
+                date: {
+                    pickerAppearance: 'dayAndTime',
+                },
+            },
+        },
     ],
 }
