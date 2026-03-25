@@ -9,7 +9,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { env } from './lib/env'
 import { Articles } from './collections/Articles'
-import { ArticlesAuthors } from './collections/ArticlesAuthors'
+import { ArticlesAuthors } from './collections/ArticlesAuthors/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
